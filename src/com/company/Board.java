@@ -58,12 +58,12 @@ public class Board {
         int col_indicator = position/row_size;
 
         int prev = col_indicator * this.row_size;
-        if(this.positions[prev] == 0 || this.positions[prev] != player){
+        if(preliminaryCheck(prev, player)){
             return false;
         }
 
         for(int i = col_indicator * this.row_size + 1; i < this.row_size*(col_indicator + 1);  i++){
-            if(this.positions[i] == 0 || this.positions[prev] != this.positions[i]) {
+            if(linearPositionCheck(prev, i)) {
                 return false;
             }
             prev = i;
@@ -75,11 +75,11 @@ public class Board {
         int row_indicator = position % row_size;
 
         int prev = row_indicator;
-        if(this.positions[prev] == 0 || this.positions[prev] != player){
+        if(preliminaryCheck(prev, player)){
             return false;
         }
         for(int i = row_indicator + this.row_size; i < this.ceiling; i+= this.row_size){
-            if(this.positions[i] == 0 || this.positions[prev] != this.positions[i]) {
+            if(linearPositionCheck(prev, i)) {
                 return false;
             }
             prev = i;
@@ -89,11 +89,11 @@ public class Board {
 
     private boolean fwdDiagonalWin(char player){
         int prev = 0;
-        if(this.positions[prev] == 0 || this.positions[prev] != player){
+        if(preliminaryCheck(prev, player)){
             return false;
         }
         for(int i = this.row_size + 1; i < this.ceiling; i = i + this.row_size + 1){
-            if(this.positions[i] == 0 || this.positions[prev] != this.positions[i]) {
+            if(linearPositionCheck(prev, i)) {
                 return false;
             }
             prev = i;
@@ -103,16 +103,24 @@ public class Board {
 
     private boolean bcwdDiagonalWin(char player){
         int prev = this.ceiling - row_size;
-        if(this.positions[prev] == 0 || this.positions[prev] != player){
+        if(preliminaryCheck(prev, player)){
             return false;
         }
         for(int i=this.ceiling - (row_size*2) + 1; i > 0; i = i - row_size + 1){
-            if(this.positions[i] == 0 || this.positions[prev] != this.positions[i]) {
+            if(linearPositionCheck(prev, i)) {
                 return false;
             }
             prev = i;
         }
         return true;
+    }
+
+    private boolean preliminaryCheck(int prev, char player){
+        return this.positions[prev] == 0 || this.positions[prev] != player;
+    }
+
+    private boolean linearPositionCheck(int prev, int current){
+        return this.positions[current] == 0 || this.positions[prev] != this.positions[current];
     }
 
     public boolean isBoardFull(){
