@@ -5,9 +5,17 @@ package com.company;
  */
 public class Board {
     private char[] positions;
+    private int ceiling;
+    private int row_size;
 
     public Board(){
-        this.positions = new char[9];
+        this(3);
+    }
+
+    public Board(int rows){
+        this.row_size = rows;
+        this.ceiling = rows * rows;
+        this.positions = new char[ceiling];
     }
 
     public boolean addToBoard(char elem, int position){
@@ -20,7 +28,7 @@ public class Board {
     }
 
     private boolean isValidPosition(int position){
-        if(position < 0 || position > 8){
+        if(position < 0 || position > this.ceiling - 1){
             System.out.println("Sorry but positions can only be numbers 1-9");
             return false;
         }
@@ -47,48 +55,64 @@ public class Board {
     }
 
     private boolean isHorizontalWin(int position, char player){
-        int row_indicator = position/3;
+        int col_indicator = position/row_size;
 
-        if(row_indicator == 0) {
-            return this.isAllEqual(0, 1, 2, player);
-        }else if(row_indicator == 1){
-            return this.isAllEqual(3, 4, 5, player);
-        }else{
-            return this.isAllEqual(6, 7, 8, player);
-        }
-    }
-
-    private boolean isVerticalWin(int position, char player){
-        int col_indicator = position % 3;
-
-        if(col_indicator == 0){
-            return this.isAllEqual(0, 3, 6, player);
-        }else if(col_indicator == 1 ){
-            return this.isAllEqual(1, 4, 7, player);
-        }else{
-            return this.isAllEqual(2, 5, 8, player);
-        }
-    }
-
-    private boolean fwdDiagonalWin(char player){
-        return this.isAllEqual(0, 4, 8, player);
-    }
-
-    private boolean bcwdDiagonalWin(char player){
-        return this.isAllEqual(2, 4, 6, player);
-    }
-
-    private boolean isAllEqual(int first, int second, int third, char player){
-        if(this.positions[first] == 0 || this.positions[second] == 0 || this.positions[third] == 0){
+        int prev = col_indicator * this.row_size;
+        if(this.positions[prev] == 0 || this.positions[prev] != player){
             return false;
         }
 
-        if(this.positions[first] == this.positions[second] && this.positions[second] == this.positions[third] &&
-                this.positions[first] == player){
-            return true;
+        for(int i = col_indicator * this.row_size + 1; i < this.row_size*(col_indicator + 1);  i++){
+            if(this.positions[i] == 0 || this.positions[prev] != this.positions[i]) {
+                return false;
+            }
+            prev = i;
         }
+        return true;
+    }
 
-        return false;
+    private boolean isVerticalWin(int position, char player){
+        int row_indicator = position % row_size;
+
+        int prev = row_indicator;
+        if(this.positions[prev] == 0 || this.positions[prev] != player){
+            return false;
+        }
+        for(int i = row_indicator + this.row_size; i < this.ceiling; i+= this.row_size){
+            if(this.positions[i] == 0 || this.positions[prev] != this.positions[i]) {
+                return false;
+            }
+            prev = i;
+        }
+        return true;
+    }
+
+    private boolean fwdDiagonalWin(char player){
+        int prev = 0;
+        if(this.positions[prev] == 0 || this.positions[prev] != player){
+            return false;
+        }
+        for(int i = this.row_size + 1; i < this.ceiling; i = i + this.row_size + 1){
+            if(this.positions[i] == 0 || this.positions[prev] != this.positions[i]) {
+                return false;
+            }
+            prev = i;
+        }
+        return true;
+    }
+
+    private boolean bcwdDiagonalWin(char player){
+        int prev = this.ceiling - row_size;
+        if(this.positions[prev] == 0 || this.positions[prev] != player){
+            return false;
+        }
+        for(int i=this.ceiling - (row_size*2) + 1; i > 0; i = i - row_size + 1){
+            if(this.positions[i] == 0 || this.positions[prev] != this.positions[i]) {
+                return false;
+            }
+            prev = i;
+        }
+        return true;
     }
 
     public boolean isBoardFull(){
@@ -110,7 +134,7 @@ public class Board {
                 pretty_board.append(this.positions[i]);
             }
 
-            if(i%3 == 2){
+            if(i%row_size == row_size - 1){
                 pretty_board.append('\n');
             }else{
                 pretty_board.append("|");
