@@ -15,7 +15,7 @@ public class ComputerPlayer extends Player {
         Integer position;
 
         while(!res){
-            position = calculate_position();
+            position = calculatePosition();
             res = this.board.addToBoard(this.piece, position);
             this.last_position_played = position;
         }
@@ -23,7 +23,7 @@ public class ComputerPlayer extends Player {
         System.out.println("Computer played: " + (this.last_position_played + 1));
     }
 
-    private int calculate_position(){
+    private int calculatePosition(){
         Random rand = new Random();
 
         return rand.nextInt(9) ;
