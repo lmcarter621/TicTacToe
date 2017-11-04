@@ -54,68 +54,43 @@ public class Board {
         return false;
     }
 
-    private boolean isHorizontalWin(int position, char player){
-        int col_indicator = position/row_size;
-
-        int prev = col_indicator * this.row_size;
-        if(preliminaryCheck(prev, player)){
+    private boolean isWin(int max, int min, int increment, char player){
+        if(firstPositionCheck(min, player)){
             return false;
         }
 
-        for(int i = col_indicator * this.row_size + 1; i < this.row_size*(col_indicator + 1);  i++){
-            if(linearPositionCheck(prev, i)) {
+        for(int i = min + increment; i < max; i += increment){
+            if(linearPositionCheck(min, i)) {
                 return false;
             }
-            prev = i;
+            min = i;
         }
         return true;
+    }
+
+    private boolean isHorizontalWin(int position, char player){
+        int col_indicator = position/row_size;
+
+        return isWin(this.row_size*(col_indicator + 1), col_indicator * this.row_size, 1, player);
     }
 
     private boolean isVerticalWin(int position, char player){
         int row_indicator = position % row_size;
 
-        int prev = row_indicator;
-        if(preliminaryCheck(prev, player)){
-            return false;
-        }
-        for(int i = row_indicator + this.row_size; i < this.ceiling; i+= this.row_size){
-            if(linearPositionCheck(prev, i)) {
-                return false;
-            }
-            prev = i;
-        }
-        return true;
+        return isWin(this.ceiling, row_indicator, this.row_size, player);
     }
 
     private boolean fwdDiagonalWin(char player){
-        int prev = 0;
-        if(preliminaryCheck(prev, player)){
-            return false;
-        }
-        for(int i = this.row_size + 1; i < this.ceiling; i = i + this.row_size + 1){
-            if(linearPositionCheck(prev, i)) {
-                return false;
-            }
-            prev = i;
-        }
-        return true;
+        return isWin(this.ceiling, 0, this.row_size + 1, player);
     }
 
     private boolean bcwdDiagonalWin(char player){
-        int prev = this.ceiling - row_size;
-        if(preliminaryCheck(prev, player)){
-            return false;
-        }
-        for(int i=this.ceiling - (row_size*2) + 1; i > 0; i = i - row_size + 1){
-            if(linearPositionCheck(prev, i)) {
-                return false;
-            }
-            prev = i;
-        }
-        return true;
+        int start = this.ceiling - row_size;
+
+        return isWin(0, start,(row_size - 1) * -1, player);
     }
 
-    private boolean preliminaryCheck(int prev, char player){
+    private boolean firstPositionCheck(int prev, char player){
         return this.positions[prev] == 0 || this.positions[prev] != player;
     }
 
