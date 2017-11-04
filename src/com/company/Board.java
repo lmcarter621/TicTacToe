@@ -58,7 +58,7 @@ public class Board {
         if(firstPositionCheck(min, player)){
             return false;
         }
-        // 2
+
         for(int i = min + increment; i < max; i += increment){
             if(linearPositionCheck(min, i)) {
                 return false;
