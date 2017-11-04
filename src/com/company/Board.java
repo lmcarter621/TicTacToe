@@ -58,7 +58,7 @@ public class Board {
         if(firstPositionCheck(min, player)){
             return false;
         }
-
+        // 2
         for(int i = min + increment; i < max; i += increment){
             if(linearPositionCheck(min, i)) {
                 return false;
@@ -85,9 +85,7 @@ public class Board {
     }
 
     private boolean bcwdDiagonalWin(char player){
-        int start = this.ceiling - row_size;
-
-        return isWin(0, start,(row_size - 1) * -1, player);
+        return isWin(this.ceiling - 1, row_size - 1,(row_size - 1), player);
     }
 
     private boolean firstPositionCheck(int prev, char player){
