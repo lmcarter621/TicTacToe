@@ -1,5 +1,6 @@
 package com.company;
 
+import java.util.Random;
 /**
  * Created by LDot on 10/7/17.
  */
@@ -23,15 +24,8 @@ public class ComputerPlayer extends Player {
     }
 
     private int calculate_position(){
-        if(this.last_position_played == null){
-            return 0;
-        }
+        Random rand = new Random();
 
-        if(this.last_position_played >= 8){
-            return 1;
-        }
-
-        return this.last_position_played + 2;
-
+        return rand.nextInt(9) ;
     }
 }

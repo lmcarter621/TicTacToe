@@ -8,27 +8,25 @@ public class TicTacToe {
         Board board = new Board();
         HumanPlayer human = new HumanPlayer('x', board);
         ComputerPlayer computer = new ComputerPlayer('o', board);
+        int round = 0;
 
         do{
-            if(play_round(human, board)){
-                break;
+            if(round % 2 == 0){
+                play_round(human, board);
+            }else{
+                play_round(computer, board);
             }
-
-            if(play_round(computer, board)){
-                break;
-            }
-        }while(!board.isBoardFull() );
+            round++;
+        }while(!board.isBoardFull());
     }
 
-    private static boolean play_round(Player player, Board board){
+    private static void play_round(Player player, Board board){
         player.makeMove();
         board.print_board();
 
-        if(player.isWinner()){
+        if(player.isWinner()) {
             System.out.print(player.getClass().getSimpleName() + " wins!");
-            return true;
+            System.exit(0);
         }
-
-        return false;
     }
 }
